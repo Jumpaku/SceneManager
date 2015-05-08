@@ -1,7 +1,7 @@
 #pragma once
 
 #include "SceneChangeMethodFactory.h"
-namespace projectj {
+namespace jumpaku {
 namespace scenemanager {
 
 template<typename SceneID>
@@ -21,7 +21,7 @@ class SceneChangeMethodFactory;
 finalize(), initialize(), doOneFrame(), decideNext()をオーバーライドする.
 ---------------------------------------------------------------------------------------*/
 
-namespace projectj {
+namespace jumpaku {
 namespace scenemanager {
 
 	template<typename SceneID>

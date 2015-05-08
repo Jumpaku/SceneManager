@@ -3,7 +3,7 @@
 
 #include "BaseSceneChangeMethod.h"
 
-namespace projectj {
+namespace jumpaku {
 namespace scenemanager {
 
 template<typename SceneID>

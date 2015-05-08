@@ -35,7 +35,7 @@ manager.finalize();
 }
 */
 
-namespace projectj {
+namespace jumpaku {
 namespace scenemanager {
 
 template<typename SceneID>

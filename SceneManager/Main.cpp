@@ -5,7 +5,7 @@
 #include "Scenes\SceneC.h"
 #include "Scenes\TestSceneID.h"
 
-using namespace projectj::scenemanager;
+using namespace jumpaku::scenemanager;
 using namespace scenetest;
 
 int main()

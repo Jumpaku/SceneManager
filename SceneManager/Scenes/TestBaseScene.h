@@ -7,7 +7,7 @@
 
 namespace scenetest {
 
-typedef projectj::scenemanager::BaseScene<scenetest::TestSceneID> Scene;
+typedef jumpaku::scenemanager::BaseScene<scenetest::TestSceneID> Scene;
 
 class TestBaseScene : public Scene
 {

@@ -1,7 +1,7 @@
 #include "./../TestBaseScene.h"
 
 using scenetest::TestBaseScene;
-using namespace projectj::scenemanager;
+using namespace jumpaku::scenemanager;
 
 TestBaseScene::TestBaseScene() {}
 

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "SceneIDGeneratorMap.h"
-namespace projectj {
+namespace jumpaku {
 namespace scenemanager {
 
 template<typename SceneID>
@@ -13,7 +13,7 @@ class BaseScene;
 //機能, 役割         : シーンの生成をします。
 //---------------------------------------------------------------------------------------
 
-namespace projectj {
+namespace jumpaku {
 namespace scenemanager {
 
 template<typename SceneID>

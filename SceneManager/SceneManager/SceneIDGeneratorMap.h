@@ -4,14 +4,14 @@
 #include <memory>
 #include <algorithm>
 #include "BaseScene.h"
-namespace projectj {
+namespace jumpaku {
 namespace scenemanager {
 template<typename SceneID>
 class BaseScene;
 }
 }
 
-namespace projectj {
+namespace jumpaku {
 namespace scenemanager {
 
 template<typename SceneID>

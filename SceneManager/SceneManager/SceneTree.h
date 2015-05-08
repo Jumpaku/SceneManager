@@ -4,7 +4,7 @@
 #include <algorithm>
 #include "../Tree/Tree.h"
 #include "BaseScene.h"
-namespace projectj {
+namespace jumpaku {
 namespace scenemanager {
 
 template<typename SceneID>
@@ -13,7 +13,7 @@ class BaseScene;
 }
 }
 
-namespace projectj {
+namespace jumpaku {
 namespace scenemanager {
 
 template<typename SceneID>
