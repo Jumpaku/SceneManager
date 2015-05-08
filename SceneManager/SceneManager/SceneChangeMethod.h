@@ -20,6 +20,9 @@ class SceneFactory;
 namespace jumpaku {
 namespace scenemanager {
 
+/**
+*
+*/
 template<typename SceneID>
 class KeepScene : public BaseSceneChangeMethod<SceneID>
 {
@@ -34,12 +37,14 @@ public:
 	}
 };
 
-
+/**
+*
+*/
 template<typename SceneID>
 class ClearScene : public BaseSceneChangeMethod<SceneID>
 {
 public:
-	ClearScene() {}
+	ClearScene() = default;
 	ClearScene(ID_t const &id) :Base_t(id) {}
 public:
 	Iterator_t changeScene(
@@ -50,12 +55,14 @@ public:
 	}
 };
 
-
+/**
+*
+*/
 template<typename SceneID>
 class PopScene : public BaseSceneChangeMethod<SceneID>
 {
 public:
-	PopScene() {}
+	PopScene() = default;
 	PopScene(ID_t const &id) :Base_t(id) {}
 public:
 	Iterator_t changeScene(
@@ -73,7 +80,9 @@ public:
 	}
 };
 
-
+/**
+*
+*/
 template<typename SceneID>
 class ResetScene : public BaseSceneChangeMethod<SceneID>
 {
@@ -93,7 +102,9 @@ public:
 	}
 };
 
-
+/**
+*
+*/
 template<typename SceneID>
 class PushScene : public BaseSceneChangeMethod<SceneID>
 {
@@ -115,7 +126,9 @@ public:
 	}
 };
 
-
+/**
+*
+*/
 template<typename SceneID>
 class JumpScene : public BaseSceneChangeMethod<SceneID>
 {
@@ -137,12 +150,14 @@ public:
 	}
 };
 
-
+/**
+*
+*/
 template<typename SceneID>
 class ParentScene : public BaseSceneChangeMethod<SceneID>
 {
 public:
-	ParentScene() {}
+	ParentScene() = default;
 	ParentScene(ID_t const &id) :Base_t(id) {}
 public:
 	Iterator_t changeScene(
@@ -155,7 +170,9 @@ public:
 	}
 };
 
-
+/**
+*
+*/
 template<typename SceneID>
 class ChildScene : public BaseSceneChangeMethod<SceneID>
 {

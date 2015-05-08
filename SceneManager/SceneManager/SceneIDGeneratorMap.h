@@ -6,8 +6,10 @@
 #include "BaseScene.h"
 namespace jumpaku {
 namespace scenemanager {
+
 template<typename SceneID>
 class BaseScene;
+
 }
 }
 
@@ -21,8 +23,7 @@ private:
 	typedef SceneID ID_t;
 	typedef std::shared_ptr<BaseScene<SceneID>> SharedScene_t;
 public:
-	BaseSceneGenerator() {};
-	virtual ~BaseSceneGenerator() {};
+	virtual ~BaseSceneGenerator() = default;
 	virtual SharedScene_t generateScene() const = 0;
 };
 
@@ -33,9 +34,6 @@ class SceneGenerator : public BaseSceneGenerator<SceneID>
 private:
 	typedef SceneID ID_t;
 	typedef std::shared_ptr<BaseScene<SceneID>> SharedScene_t;
-public:
-	SceneGenerator() {};
-	~SceneGenerator() {};
 public:
 	SharedScene_t generateScene() const
 	{
@@ -61,8 +59,8 @@ private:
 	SceneIDGeneratorMap &operator=(const SceneIDGeneratorMap &) = delete;
 	SceneIDGeneratorMap &operator=(SceneIDGeneratorMap &&) = delete;
 public:
-	SceneIDGeneratorMap() {}
-	~SceneIDGeneratorMap() {}
+	SceneIDGeneratorMap() = default;
+	~SceneIDGeneratorMap() = default;
 public:
 	template<class DerivedScene>
 	int insertGenerator(ID_t id)

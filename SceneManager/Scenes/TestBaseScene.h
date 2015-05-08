@@ -17,8 +17,8 @@ private:
 	int method_m;
 	ID id_m;
 public:
-	TestBaseScene();
-	virtual ~TestBaseScene();
+	TestBaseScene() = default;
+	virtual ~TestBaseScene() = default;
 public:
 	int finalize();
 	int initialize();

@@ -3,10 +3,6 @@
 using scenetest::TestBaseScene;
 using namespace jumpaku::scenemanager;
 
-TestBaseScene::TestBaseScene() {}
-
-TestBaseScene::~TestBaseScene() {}
-
 int TestBaseScene::finalize()
 {
 	std::cout << name_m << "::finalize()" << std::endl;

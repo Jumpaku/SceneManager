@@ -4,18 +4,16 @@
 #include "SceneFactory.h"
 #include "SceneChangeMethod.h"
 
-//説明
-/*---------------------------------------------------------------------------------------
-シーンの実行とシーンの移行,シーン生成クラスの管理をする.
-テンプレート引数SceneIDはシーン識別名変数を表す.(列挙体,文字列,通し番号など)
-
-まずregisterScene<Scene>(id)を呼んで使用するシーンクラス(Scene)とそのシーンの識別名(id)を登録する.
-そしてsetFirstScene(id)を呼んで最初のシーンを設定する.
-メインループの中で1ループに1度excuteScene()を実行する.
-終わったらfinalize()を呼ぶ.
----------------------------------------------------------------------------------------*/
-//使用例
-/*	
+/**
+*シーンの実行とシーンの移行,シーン生成クラスの管理をする.
+*テンプレート引数SceneIDはシーン識別名変数を表す.(列挙体,文字列,通し番号など)
+*
+*まずregisterScene<Scene>(id)を呼んで使用するシーンクラス(Scene)とそのシーンの識別名(id)を登録する.
+*そしてsetFirstScene(id)を呼んで最初のシーンを設定する.
+*メインループの中で1ループに1度excuteScene()を実行する.
+*終わったらfinalize()を呼ぶ.
+*/
+/*使用例
 int main()
 {
 	SceneManager manager;
@@ -26,12 +24,12 @@ int main()
 	manager.setFirstScene(scenetest::TestSceneID::SCENE_A);
 
 	while (true){
-	if (manager.executeScene() != 0){
-		break;
+		if (manager.executeScene() != 0){
+			break;
+		}
 	}
-}
 
-manager.finalize();
+	manager.finalize();
 }
 */
 
@@ -57,8 +55,10 @@ private:
 	SceneManager &operator=(const SceneManager &) = delete;
 	SceneManager &operator=(SceneManager &&) = delete;
 public:
+	/***/
 	SceneManager() :tree_m(), currentScene_m(tree_m.end()) {}
-	~SceneManager() {}
+	/***/
+	~SceneManager() = default;
 private:
 	int changeScene()
 	{
@@ -76,12 +76,17 @@ private:
 		return 0;
 	}
 public:
+	/**
+	*
+	*/
 	template<class DerivedScene>
 	int registerScene(ID_t id)
 	{
 		return factory_m.insertGenerator<DerivedScene>(id);
 	}
-
+	/**
+	*
+	*/
 	int executeScene()
 	{
 		if(currentScene_m == tree_m.end()) { return -1; }
@@ -92,6 +97,9 @@ public:
 		return 0;
 	}
 
+	/**
+	*
+	*/
 	void finalize()
 	{
 		currentScene_m = tree_m.end();
@@ -99,6 +107,9 @@ public:
 		factory_m.finalize();
 	}
 
+	/**
+	*
+	*/
 	int setFirstScene(ID_t id)
 	{
 		currentScene_m = ResetScene<ID_t>(id).changeScene(factory_m, tree_m, currentScene_m);

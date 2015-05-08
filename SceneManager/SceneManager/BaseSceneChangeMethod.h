@@ -20,24 +20,43 @@ class SceneFactory;
 namespace jumpaku {
 namespace scenemanager {
 
+/**
+*
+*/
 template<typename SceneID>
 class BaseSceneChangeMethod
 {
 protected:
+	/***/
 	typedef SceneID ID_t;
+	/***/
 	typedef BaseSceneChangeMethod<SceneID> Base_t;
+	/***/
 	typedef typename Tree<SceneNode<SceneID>>::preorder_iterator Iterator_t;
+	/***/
 	typedef SceneFactory<SceneID> Factory_t;
+	/***/
 	typedef SceneTree<SceneID> Tree_t;
+	/***/
 	typedef SceneNode<SceneID> Node_t;
+	/***/
 	typedef std::shared_ptr<BaseScene<SceneID>> SharedScene_t;
 protected:
+	/***/
 	ID_t nextID_m;
 public:
-	BaseSceneChangeMethod(ID_t const &id) :nextID_m(id){}
+	/**
+	*
+	*/
+	BaseSceneChangeMethod(ID_t const &id) :nextID_m(id) {}
+	/***/
 	BaseSceneChangeMethod() = default;
+	/***/
 	virtual ~BaseSceneChangeMethod() = default;
 public:
+	/**
+	*
+	*/
 	virtual Iterator_t changeScene(
 		Factory_t const &factory, Tree_t &tree, Iterator_t current) const
 	{

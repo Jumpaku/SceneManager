@@ -32,9 +32,12 @@ private:
 	SceneFactory &operator=(const SceneFactory &) = delete;
 	SceneFactory &operator=(SceneFactory &&) = delete;
 public:
-	SceneFactory() {}
-	~SceneFactory() {}
+	/***/
+	SceneFactory() = default;
 public:
+	/**
+	*
+	*/
 	SharedScene_t getScene(ID_t id) const
 	{
 		Generator_t *generator = nullptr;
@@ -48,11 +51,17 @@ public:
 		return newScene;
 	}
 
+	/**
+	*
+	*/
 	void finalize()
 	{
 		idGeneratorMap_m.clearMap();
 	}
 
+	/**
+	*
+	*/
 	template<class DerivedScene>
 	int insertGenerator(ID_t id)
 	{
