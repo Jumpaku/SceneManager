@@ -4,6 +4,8 @@
 #include "SceneFactory.h"
 #include "SceneTransition.h"
 
+#include"SceneException.h"
+
 /**
 *シーンの実行とシーンの移行,シーン生成クラスの管理をする.
 *テンプレート引数SceneIDはシーン識別名変数を表す.(列挙体,文字列,通し番号など)
@@ -55,46 +57,47 @@ private:
 	SceneManager &operator=(const SceneManager &) = delete;
 	SceneManager &operator=(SceneManager &&) = delete;
 public:
-	/***/
+	/**constructor*/
 	SceneManager() :tree_m(), currentScene_m(tree_m.end()) {}
-	/***/
+	/**destructor*/
 	~SceneManager() = default;
 private:
-	int transition()
+	void transition()
 	{
 		if(currentScene_m != tree_m.end()) {
-			if(currentScene_m->scene_m == nullptr) { return -1; }
-			Transition_t transition
-				= currentScene_m->scene_m->decideNext();
+			//if(currentScene_m->scene_m == nullptr) { throw SceneException("transition error : current scene is nullptr"); }
+			Transition_t transition = currentScene_m->scene_m->decideNext();
 
 			currentScene_m = transition->transitionScene(
 				factory_m, tree_m, currentScene_m);
+			currentScene_m->
 		}
 
-		if(currentScene_m == tree_m.end()) { return -1; }
-
-		return 0;
+		if(currentScene_m == tree_m.end()) { throw SceneException("transition error : current scene itertor is end of tree"); }
 	}
 public:
 	/**
 	*
 	*/
 	template<class DerivedScene>
-	int registerScene(ID_t id)
+	void registerScene(ID_t id)
 	{
-		return factory_m.insertGenerator<DerivedScene>(id);
+		if(factory_m.insertGenerator<DerivedScene>(id) != 0) { throw SceneException("registration error"); }
 	}
 	/**
 	*
 	*/
-	int executeScene()
+	void executeScene()
 	{
-		if(currentScene_m == tree_m.end()) { return -1; }
-		if(currentScene_m->scene_m == nullptr) { return -1; }
-		if(currentScene_m->scene_m->doOneFrame() != 0) { return -1; }
-		if(transition() != 0) { return -1; }
-
-		return 0;
+		if(currentScene_m == tree_m.end()) { throw SceneException("execution error : current scene iterator is end of tree"); }
+		//if(currentScene_m->scene_m == nullptr) { throw SceneException("execution error : current scene is nullptr"); }
+		if(currentScene_m->scene_m->doOneFrame() != 0) { throw SceneException("execution error : doOneFrame falure"); }
+		try{
+			transition();
+		}
+		catch(SceneException &e) {
+			throw;
+		}
 	}
 
 	/**
@@ -110,11 +113,9 @@ public:
 	/**
 	*
 	*/
-	int setFirstScene(ID_t id)
+	void setFirstScene(ID_t id)
 	{
 		currentScene_m = ResetScene<ID_t>(id).transitionScene(factory_m, tree_m, currentScene_m);
-
-		return 0;
 	}
 };
 

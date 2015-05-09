@@ -4,6 +4,7 @@
 #include <algorithm>
 #include "../Tree/Tree.h"
 #include "BaseScene.h"
+
 namespace jumpaku {
 namespace scenemanager {
 

@@ -10,19 +10,22 @@ using namespace scenetest;
 
 int main()
 {
-	SceneManager<scenetest::TestSceneID> manager;
-	
-	manager.registerScene<scenetest::SceneA>(scenetest::TestSceneID::SCENE_A);
-	manager.registerScene<scenetest::SceneC>(scenetest::TestSceneID::SCENE_C);
-	manager.registerScene<scenetest::SceneB>(scenetest::TestSceneID::SCENE_B);
-	manager.setFirstScene(scenetest::TestSceneID::SCENE_A);
+	while(true) {
+		SceneManager<scenetest::TestSceneID> manager;
+		try {
 
-	while (true){
-		if (manager.executeScene() != 0){
-			break;
+			manager.registerScene<scenetest::SceneA>(scenetest::TestSceneID::SCENE_A);
+			manager.registerScene<scenetest::SceneC>(scenetest::TestSceneID::SCENE_C);
+			manager.registerScene<scenetest::SceneB>(scenetest::TestSceneID::SCENE_B);
+			manager.setFirstScene(scenetest::TestSceneID::SCENE_A);
+
+			while(true) {
+				manager.executeScene();
+			}
+		}
+		catch(SceneException &e) {
+			std::cout << e.what() << "\n";
+			manager.finalize();
 		}
 	}
-
-	manager.finalize();
-
 }
