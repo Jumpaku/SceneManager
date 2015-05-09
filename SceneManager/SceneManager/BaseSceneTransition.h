@@ -2,6 +2,7 @@
 
 #include "SceneFactory.h"
 #include "SceneTree.h"
+#include"SceneException.h"
 
 namespace jumpaku {
 namespace scenemanager {
