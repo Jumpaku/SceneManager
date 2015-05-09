@@ -31,37 +31,37 @@ int TestBaseScene::doOneFrame()
 	return 0;
 }
 
-TestBaseScene::ChangeMethod scenetest::TestBaseScene::decideNext()
+TestBaseScene::SceneTransition scenetest::TestBaseScene::decideNext()
 {
-	ChangeMethod method;
+	SceneTransition method;
 	std::cout << name_m << "::decideNext()" << std::endl;
 	switch(method_m) {
 	case 0:
-		method = MethodFactory::get<KeepScene>();
+		method = getSceneTransition<KeepScene>();
 		break;
 	case 1:
-		method = MethodFactory::get<ClearScene>();
+		method = getSceneTransition<ClearScene>();
 		break;
 	case 2:
-		method = MethodFactory::get<PopScene>(id_m);
+		method = getSceneTransition<PopScene>(id_m);
 		break;
 	case 3:
-		method = MethodFactory::get<ResetScene>(id_m);
+		method = getSceneTransition<ResetScene>(id_m);
 		break;
 	case 4:
-		method = MethodFactory::get<PushScene>(id_m);
+		method = getSceneTransition<PushScene>(id_m);
 		break;
 	case 5:
-		method = MethodFactory::get<JumpScene>(id_m);
+		method = getSceneTransition<JumpScene>(id_m);
 		break;
 	case 6:
-		method = MethodFactory::get<ParentScene>();
+		method = getSceneTransition<ParentScene>();
 		break;
 	case 7:
-		method = MethodFactory::get<ChildScene>(id_m);
+		method = getSceneTransition<ChildScene>(id_m);
 		break;
 	default:
-		method = MethodFactory::get<BaseSceneChangeMethod>(id_m);
+		method = getSceneTransition<BaseSceneTransition>(id_m);
 		break;
 	}
 

@@ -20,10 +20,10 @@ public:
 	TestBaseScene() = default;
 	virtual ~TestBaseScene() = default;
 public:
-	int finalize();
-	int initialize();
-	int doOneFrame();
-	ChangeMethod decideNext();
+	int finalize()override;
+	int initialize()override;
+	int doOneFrame()override;
+	SceneTransition decideNext()override;
 };
 
 }

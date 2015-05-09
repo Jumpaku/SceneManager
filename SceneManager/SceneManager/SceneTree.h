@@ -17,7 +17,7 @@ namespace jumpaku {
 namespace scenemanager {
 
 template<typename SceneID>
-struct SceneNode
+class SceneNode
 {
 private:
 	typedef SceneID ID_t;

@@ -1,13 +1,14 @@
 #pragma once
 
-#include "SceneChangeMethodFactory.h"
+#include "SceneTransitionFactory.h"
+
 namespace jumpaku {
 namespace scenemanager {
 
 template<typename SceneID>
-class BaseSceneChangeMethod;
+class BaseSceneTransition;
 template<typename SceneID>
-class SceneChangeMethodFactory;
+class SceneTransitionFactory;
 
 }
 }
@@ -30,20 +31,29 @@ public:
 	/**シーン識別名の型*/
 	typedef SceneID ID;
 	/**シーンの遷移方法クラスの基本クラス*/
-	typedef std::unique_ptr<BaseSceneChangeMethod<SceneID>> ChangeMethod;
-	/**ChangeMethodFactory::get<遷移方法クラス>(次のシーン識別名)で次のシーンへの遷移方法クラスを得る事ができるクラス*/
-	typedef SceneChangeMethodFactory<SceneID> MethodFactory;
+	typedef std::unique_ptr<BaseSceneTransition<SceneID>> SceneTransition;
 public:
 	/**default constructor*/
 	BaseScene() = default;
 	/**default denstructor*/
 	virtual ~BaseScene() = default;
+protected:
+	template<template <typename> class Method>
+	static SceneTransition getSceneTransition(SceneID id)
+	{
+		return SceneTransitionFactory<SceneID>::get<Method>(id);
+	}
+	template<template <typename> class Method>
+	static SceneTransition getSceneTransition()
+	{
+		return SceneTransitionFactory<SceneID>::get<Method>();
+	}
 public:
 	/**
 	*1ループに1度execute()の後に呼ばれ,次のシーンへの遷移方法クラスを返す.
 	*@return シーン遷移方法
 	*/ 
-	virtual ChangeMethod decideNext() = 0;
+	virtual SceneTransition decideNext() = 0;
 	/**
 	*ゲームのメインループの本体であり,1ループに1度呼ばれる. 成功:0 / 失敗:-1
 	*/
@@ -61,5 +71,5 @@ public:
 }
 }
 
-#include "SceneChangeMethod.h"
+#include "SceneTransition.h"
 

@@ -2,7 +2,7 @@
 
 #include "SceneTree.h"
 #include "SceneFactory.h"
-#include "SceneChangeMethod.h"
+#include "SceneTransition.h"
 
 /**
 *シーンの実行とシーンの移行,シーン生成クラスの管理をする.
@@ -44,7 +44,7 @@ private:
 	typedef SceneTree<SceneID> Tree_t;
 	typedef typename Tree<SceneNode<SceneID>>::preorder_iterator Iterator_t;
 	typedef SceneFactory<SceneID> Factory_t;
-	typedef std::unique_ptr<BaseSceneChangeMethod<SceneID>> ChangeMethod_t;
+	typedef std::unique_ptr<BaseSceneTransition<SceneID>> Transition_t;
 private:
 	Tree_t tree_m;
 	Iterator_t currentScene_m;
@@ -60,14 +60,14 @@ public:
 	/***/
 	~SceneManager() = default;
 private:
-	int changeScene()
+	int transition()
 	{
 		if(currentScene_m != tree_m.end()) {
 			if(currentScene_m->scene_m == nullptr) { return -1; }
-			ChangeMethod_t changeMethod
+			Transition_t transition
 				= currentScene_m->scene_m->decideNext();
 
-			currentScene_m = changeMethod->changeScene(
+			currentScene_m = transition->transitionScene(
 				factory_m, tree_m, currentScene_m);
 		}
 
@@ -92,7 +92,7 @@ public:
 		if(currentScene_m == tree_m.end()) { return -1; }
 		if(currentScene_m->scene_m == nullptr) { return -1; }
 		if(currentScene_m->scene_m->doOneFrame() != 0) { return -1; }
-		if(changeScene() != 0) { return -1; }
+		if(transition() != 0) { return -1; }
 
 		return 0;
 	}
@@ -112,7 +112,7 @@ public:
 	*/
 	int setFirstScene(ID_t id)
 	{
-		currentScene_m = ResetScene<ID_t>(id).changeScene(factory_m, tree_m, currentScene_m);
+		currentScene_m = ResetScene<ID_t>(id).transitionScene(factory_m, tree_m, currentScene_m);
 
 		return 0;
 	}

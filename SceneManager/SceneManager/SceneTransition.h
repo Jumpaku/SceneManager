@@ -1,6 +1,6 @@
 #pragma once
 
-#include "BaseSceneChangeMethod.h"
+#include "BaseSceneTransition.h"
 
 namespace jumpaku {
 namespace scenemanager {
@@ -24,13 +24,13 @@ namespace scenemanager {
 *
 */
 template<typename SceneID>
-class KeepScene : public BaseSceneChangeMethod<SceneID>
+class KeepScene : public BaseSceneTransition<SceneID>
 {
 public:
 	KeepScene() = default;
 	KeepScene(ID_t const &id) :Base_t(id) {}
 public:
-	Iterator_t changeScene(
+	Iterator_t transitionScene(
 		Factory_t const &factory, Tree_t &tree, Iterator_t current) const
 	{
 		return current;
@@ -41,13 +41,13 @@ public:
 *
 */
 template<typename SceneID>
-class ClearScene : public BaseSceneChangeMethod<SceneID>
+class ClearScene : public BaseSceneTransition<SceneID>
 {
 public:
 	ClearScene() = default;
 	ClearScene(ID_t const &id) :Base_t(id) {}
 public:
-	Iterator_t changeScene(
+	Iterator_t transitionScene(
 		Factory_t const &factory, Tree_t &tree, Iterator_t current) const
 	{
 		tree.clear();
@@ -59,13 +59,13 @@ public:
 *
 */
 template<typename SceneID>
-class PopScene : public BaseSceneChangeMethod<SceneID>
+class PopScene : public BaseSceneTransition<SceneID>
 {
 public:
 	PopScene() = default;
 	PopScene(ID_t const &id) :Base_t(id) {}
 public:
-	Iterator_t changeScene(
+	Iterator_t transitionScene(
 		Factory_t const &factory, Tree_t &tree, Iterator_t current) const
 	{
 		if(current == tree.end()) { return tree.end(); }
@@ -84,12 +84,12 @@ public:
 *
 */
 template<typename SceneID>
-class ResetScene : public BaseSceneChangeMethod<SceneID>
+class ResetScene : public BaseSceneTransition<SceneID>
 {
 public:
 	ResetScene(ID_t const &id) :Base_t(id) {}
 public:
-	Iterator_t changeScene(
+	Iterator_t transitionScene(
 		Factory_t const &factory, Tree_t &tree, Iterator_t current) const
 	{
 		auto scene = factory.getScene(nextID_m);
@@ -106,12 +106,12 @@ public:
 *
 */
 template<typename SceneID>
-class PushScene : public BaseSceneChangeMethod<SceneID>
+class PushScene : public BaseSceneTransition<SceneID>
 {
 public:
 	PushScene(ID_t const &id) :Base_t(id) {}
 public:
-	Iterator_t changeScene(
+	Iterator_t transitionScene(
 		Factory_t const &factory, Tree_t &tree, Iterator_t current) const
 	{
 		auto scene = factory.getScene(nextID_m);
@@ -130,12 +130,12 @@ public:
 *
 */
 template<typename SceneID>
-class JumpScene : public BaseSceneChangeMethod<SceneID>
+class JumpScene : public BaseSceneTransition<SceneID>
 {
 public:
 	JumpScene(ID_t const &id) :Base_t(id) {}
 public:
-	Iterator_t changeScene(
+	Iterator_t transitionScene(
 		Factory_t const &factory, Tree_t &tree, Iterator_t current) const
 	{
 		Iterator_t found = tree.find(nextID_m);
@@ -144,7 +144,7 @@ public:
 			return found;
 		}
 		else{
-			return PushScene<ID_t>(nextID_m).changeScene(
+			return PushScene<ID_t>(nextID_m).transitionScene(
 				factory, tree, current);
 		}
 	}
@@ -154,13 +154,13 @@ public:
 *
 */
 template<typename SceneID>
-class ParentScene : public BaseSceneChangeMethod<SceneID>
+class ParentScene : public BaseSceneTransition<SceneID>
 {
 public:
 	ParentScene() = default;
 	ParentScene(ID_t const &id) :Base_t(id) {}
 public:
-	Iterator_t changeScene(
+	Iterator_t transitionScene(
 		Factory_t const &factory, Tree_t &tree, Iterator_t current) const
 	{
 		if(current.isRoot() || current == tree.end()) { return tree.end(); }
@@ -174,12 +174,12 @@ public:
 *
 */
 template<typename SceneID>
-class ChildScene : public BaseSceneChangeMethod<SceneID>
+class ChildScene : public BaseSceneTransition<SceneID>
 {
 public:
 	ChildScene(ID_t const &id) :Base_t(id) {}
 public:
-	Iterator_t changeScene(
+	Iterator_t transitionScene(
 		Factory_t const &factory, Tree_t &tree, Iterator_t current) const
 	{
 		if(current.isLeaf()) { return tree.end(); }
