@@ -92,13 +92,17 @@ public:
 	Iterator_t transitionScene(
 		Factory_t const &factory, Tree_t &tree, Iterator_t current) const
 	{
-		auto scene = factory.getScene(nextID_m);
-		//if(scene == nullptr) { return tree.end(); }
+		try {
+			auto scene = factory.getScene(nextID_m);
 
-		tree.clear();
-		scene->initialize();
+			tree.clear();
+			scene->initialize();
 
-		return tree.setRoot({ nextID_m, scene });
+			return tree.setRoot({ nextID_m, scene });
+		}
+		catch(SceneException &e) {
+			throw SceneException("cannot reset");
+		}
 	}
 };
 
@@ -114,15 +118,20 @@ public:
 	Iterator_t transitionScene(
 		Factory_t const &factory, Tree_t &tree, Iterator_t current) const
 	{
-		auto scene = factory.getScene(nextID_m);
-		//if(scene == nullptr) { return tree.end(); }
+		try {
+			auto scene = factory.getScene(nextID_m);
 
-		current = tree.insertChild(current, { nextID_m, scene });
+			current = tree.insertChild(current, { nextID_m, scene });
+		}
+		catch(SceneException &e) {
+			throw SceneException("connot push");
+		}
 		if(current == tree.end()) { throw SceneException("connot push"); }
 
-		scene->initialize();
-
+		current->scene_m->initialize();
+		
 		return current;
+		
 	}
 };
 

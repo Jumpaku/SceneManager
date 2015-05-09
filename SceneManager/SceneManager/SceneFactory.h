@@ -40,13 +40,12 @@ public:
 	*/
 	SharedScene_t getScene(ID_t id) const
 	{
-		Generator_t *generator = nullptr;
-		SharedScene_t newScene = nullptr;
-
-		generator = idGeneratorMap_m.getGenerator(id);
-		if(generator != nullptr) {
-			newScene = generator->generateScene();
+		Generator_t *generator = idGeneratorMap_m.getGenerator(id);
+		
+		if(generator == nullptr) {
+			throw SceneException("cannot generate scene");
 		}
+		SharedScene_t newScene = generator->generateScene();
 
 		return newScene;
 	}
