@@ -20,12 +20,17 @@ int main()
 			manager.setFirstScene(scenetest::TestSceneID::SCENE_A);
 
 			while(true) {
-				manager.executeScene();
+				if(manager.executeScene() == SceneManager<scenetest::TestSceneID>::FINISH) {
+					manager.finalize();
+					break;
+				}
 			}
 		}
 		catch(SceneException &e) {
 			std::cout << e.what() << "\n";
 			manager.finalize();
 		}
+		std::cout << "---------------------------------\n";
+
 	}
 }

@@ -47,6 +47,11 @@ private:
 	typedef typename Tree<SceneNode<SceneID>>::preorder_iterator Iterator_t;
 	typedef SceneFactory<SceneID> Factory_t;
 	typedef std::unique_ptr<BaseSceneTransition<SceneID>> Transition_t;
+public:
+	/***/
+	static int const CONTINUE = 1;
+	/***/
+	static int const FINISH = 0;
 private:
 	Tree_t tree_m;
 	Iterator_t currentScene_m;
@@ -62,18 +67,24 @@ public:
 	/**destructor*/
 	~SceneManager() = default;
 private:
-	void transition()
+	int transition()
 	{
-		if(currentScene_m != tree_m.end()) {
-			//if(currentScene_m->scene_m == nullptr) { throw SceneException("transition error : current scene is nullptr"); }
-			Transition_t transition = currentScene_m->scene_m->decideNext();
+		if(currentScene_m == tree_m.end()) {
+			throw SceneException("!transition error : current scene itertor is end of tree!");
+		}
+		//if(currentScene_m->scene_m == nullptr) { throw SceneException("transition error : current scene is nullptr"); }
+		
+		Transition_t transition = currentScene_m->scene_m->decideNext();
 
+		try {
 			currentScene_m = transition->transitionScene(
 				factory_m, tree_m, currentScene_m);
-			currentScene_m->
+		}
+		catch(SceneException &e) {
+			throw SceneException((std::string("!transition error : ") + e.what() + "!").c_str());
 		}
 
-		if(currentScene_m == tree_m.end()) { throw SceneException("transition error : current scene itertor is end of tree"); }
+		return currentScene_m == tree_m.end() ? FINISH : CONTINUE;
 	}
 public:
 	/**
@@ -82,18 +93,18 @@ public:
 	template<class DerivedScene>
 	void registerScene(ID_t id)
 	{
-		if(factory_m.insertGenerator<DerivedScene>(id) != 0) { throw SceneException("registration error"); }
+		if(factory_m.insertGenerator<DerivedScene>(id) != 0) { throw SceneException("!registration error!"); }
 	}
 	/**
 	*
 	*/
-	void executeScene()
+	int executeScene()
 	{
-		if(currentScene_m == tree_m.end()) { throw SceneException("execution error : current scene iterator is end of tree"); }
+		if(currentScene_m == tree_m.end()) { throw SceneException("!execution error : current scene iterator is end of tree!"); }
 		//if(currentScene_m->scene_m == nullptr) { throw SceneException("execution error : current scene is nullptr"); }
-		if(currentScene_m->scene_m->doOneFrame() != 0) { throw SceneException("execution error : doOneFrame falure"); }
+		if(currentScene_m->scene_m->doOneFrame() != 0) { throw SceneException("!execution error : doOneFrame falure!"); }
 		try{
-			transition();
+			return transition();
 		}
 		catch(SceneException &e) {
 			throw;
@@ -115,7 +126,12 @@ public:
 	*/
 	void setFirstScene(ID_t id)
 	{
-		currentScene_m = ResetScene<ID_t>(id).transitionScene(factory_m, tree_m, currentScene_m);
+		try {
+			currentScene_m = ResetScene<ID_t>(id).transitionScene(factory_m, tree_m, currentScene_m);
+		}
+		catch(SceneException &e) {
+			throw SceneException((std::string("!setting scene error : ") + e.what() + "!").c_str());
+		}
 	}
 };
 
