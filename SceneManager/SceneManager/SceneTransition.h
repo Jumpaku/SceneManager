@@ -68,8 +68,8 @@ public:
 	Iterator_t transitionScene(
 		Factory_t const &factory, Tree_t &tree, Iterator_t current) const
 	{
-		if(current == tree.end()) { throw SceneException("connot pop"); }
-		if(current.isRoot()) { throw SceneException("connot pop"); }
+		if(current == tree.end()) { throw SceneLogicException("connot pop"); }
+		if(current.isRoot()) { throw SceneLogicException("connot pop"); }
 
 		Iterator_t poped = current;
 
@@ -100,8 +100,8 @@ public:
 
 			return tree.setRoot({ nextID_m, scene });
 		}
-		catch(SceneException &e) {
-			throw SceneException("cannot reset");
+		catch(SceneLogicException &e) {
+			throw SceneLogicException("cannot reset");
 		}
 	}
 };
@@ -120,13 +120,12 @@ public:
 	{
 		try {
 			auto scene = factory.getScene(nextID_m);
-
 			current = tree.insertChild(current, { nextID_m, scene });
 		}
-		catch(SceneException &e) {
-			throw SceneException("connot push");
+		catch(SceneLogicException &e) {
+			throw SceneLogicException("connot push");
 		}
-		if(current == tree.end()) { throw SceneException("connot push"); }
+		if(current == tree.end()) { throw SceneLogicException("connot push"); }
 
 		current->scene_m->initialize();
 		
@@ -157,8 +156,8 @@ public:
 				return PushScene<ID_t>(nextID_m).transitionScene(
 					factory, tree, current);
 			}
-			catch(SceneException &e) {
-				throw SceneException("cannot jump");
+			catch(SceneLogicException &e) {
+				throw SceneLogicException("cannot jump");
 			}
 		}
 	}
@@ -177,7 +176,7 @@ public:
 	Iterator_t transitionScene(
 		Factory_t const &factory, Tree_t &tree, Iterator_t current) const
 	{
-		if(current.isRoot() || current == tree.end()) { throw SceneException("connot go parent"); }
+		if(current.isRoot() || current == tree.end()) { throw SceneLogicException("connot go parent"); }
 		current.goParent();
 
 		return current;
@@ -196,14 +195,14 @@ public:
 	Iterator_t transitionScene(
 		Factory_t const &factory, Tree_t &tree, Iterator_t current) const
 	{
-		if(current.isLeaf()) { throw SceneException("connot go child"); }
+		if(current.isLeaf()) { throw SceneLogicException("connot go child"); }
 
 		current.goFirstChild();
 
 		while(true) {
 			if(current->id_m == nextID_m) { break; }
 			else {
-				if(current.isLast()) { throw SceneException("connot go child"); }
+				if(current.isLast()) { throw SceneLogicException("connot go child"); }
 				current.goNextSibling();
 			}
 		}

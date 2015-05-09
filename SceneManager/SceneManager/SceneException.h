@@ -6,9 +6,14 @@
 namespace jumpaku{
 namespace scenemanager {
 
-struct SceneException : std::exception
+struct SceneLogicException : std::logic_error
 {
-	SceneException(char const *message) :exception(message) {}
+	SceneLogicException(char const *message) :logic_error(message) {}
+};
+
+struct SceneRuntimeException : std::runtime_error
+{
+	SceneRuntimeException(char const *message) :runtime_error(message) {}
 };
 
 }

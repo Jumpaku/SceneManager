@@ -26,7 +26,7 @@ int main()
 				}
 			}
 		}
-		catch(SceneException &e) {
+		catch(SceneLogicException &e) {
 			std::cout << e.what() << "\n";
 			manager.finalize();
 		}

@@ -40,14 +40,16 @@ public:
 	*/
 	SharedScene_t getScene(ID_t id) const
 	{
-		Generator_t *generator = idGeneratorMap_m.getGenerator(id);
-		
-		if(generator == nullptr) {
-			throw SceneException("cannot generate scene");
-		}
-		SharedScene_t newScene = generator->generateScene();
+		try {
+			Generator_t *generator = idGeneratorMap_m.getGenerator(id);
 
-		return newScene;
+			SharedScene_t newScene = generator->generateScene();
+
+			return newScene;
+		}
+		catch(SceneLogicException &e) {
+			throw SceneLogicException("cannot generate scene");
+		}
 	}
 
 	/**
@@ -62,9 +64,9 @@ public:
 	*
 	*/
 	template<class DerivedScene>
-	int insertGenerator(ID_t id)
+	void insertGenerator(ID_t id)
 	{
-		return idGeneratorMap_m.insertGenerator<DerivedScene>(id);
+		idGeneratorMap_m.insertGenerator<DerivedScene>(id);
 	}
 };
 

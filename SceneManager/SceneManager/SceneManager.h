@@ -70,18 +70,17 @@ private:
 	int transition()
 	{
 		if(currentScene_m == tree_m.end()) {
-			throw SceneException("!transition error : current scene itertor is end of tree!");
+			throw SceneLogicException("!transition error : current scene itertor is end of tree!");
 		}
-		//if(currentScene_m->scene_m == nullptr) { throw SceneException("transition error : current scene is nullptr"); }
-		
+
 		Transition_t transition = currentScene_m->scene_m->decideNext();
 
 		try {
 			currentScene_m = transition->transitionScene(
 				factory_m, tree_m, currentScene_m);
 		}
-		catch(SceneException &e) {
-			throw SceneException((std::string("!transition error : ") + e.what() + "!").c_str());
+		catch(SceneLogicException &e) {
+			throw SceneLogicException((std::string("!transition error : ") + e.what() + "!").c_str());
 		}
 
 		return currentScene_m == tree_m.end() ? FINISH : CONTINUE;
@@ -93,20 +92,19 @@ public:
 	template<class DerivedScene>
 	void registerScene(ID_t id)
 	{
-		if(factory_m.insertGenerator<DerivedScene>(id) != 0) { throw SceneException("!registration error!"); }
+		factory_m.insertGenerator<DerivedScene>(id);
 	}
 	/**
 	*
 	*/
 	int executeScene()
 	{
-		if(currentScene_m == tree_m.end()) { throw SceneException("!execution error : current scene iterator is end of tree!"); }
-		//if(currentScene_m->scene_m == nullptr) { throw SceneException("execution error : current scene is nullptr"); }
-		if(currentScene_m->scene_m->doOneFrame() != 0) { throw SceneException("!execution error : doOneFrame falure!"); }
+		if(currentScene_m == tree_m.end()) { throw SceneLogicException("!execution error : current scene iterator is end of tree!"); }
+		if(currentScene_m->scene_m->doOneFrame() != 0) { throw SceneLogicException("!execution error : doOneFrame falure!"); }
 		try{
 			return transition();
 		}
-		catch(SceneException &e) {
+		catch(SceneLogicException &e) {
 			throw;
 		}
 	}
@@ -129,8 +127,8 @@ public:
 		try {
 			currentScene_m = ResetScene<ID_t>(id).transitionScene(factory_m, tree_m, currentScene_m);
 		}
-		catch(SceneException &e) {
-			throw SceneException((std::string("!setting scene error : ") + e.what() + "!").c_str());
+		catch(SceneLogicException &e) {
+			throw SceneLogicException((std::string("!setting scene error : ") + e.what() + "!").c_str());
 		}
 	}
 };

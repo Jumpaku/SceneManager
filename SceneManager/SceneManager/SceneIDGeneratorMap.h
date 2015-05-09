@@ -4,6 +4,8 @@
 #include <memory>
 #include <algorithm>
 #include "BaseScene.h"
+#include"SceneException.h"
+
 namespace jumpaku {
 namespace scenemanager {
 
@@ -37,7 +39,12 @@ private:
 public:
 	SharedScene_t generateScene() const
 	{
-		return std::make_shared<DerivedScene>();
+		try {
+			return std::make_shared<DerivedScene>();
+		}
+		catch(std::bad_alloc &e) {
+			throw SceneRuntimeException("scene make_shared bad_alloc");
+		}
 	}
 };
 
@@ -63,19 +70,18 @@ public:
 	~SceneIDGeneratorMap() = default;
 public:
 	template<class DerivedScene>
-	int insertGenerator(ID_t id)
+	void insertGenerator(ID_t id)
 	{
-		return insertGenerator(id, new SceneGenerator<ID_t, DerivedScene>());
-	}
-
-	int insertGenerator(ID_t id, Generator_t *generator)
-	{
-		if(generator == nullptr) { return -1; }
-		if(map_m.find(id) != map_m.end()) { return -1; }
-
-		map_m.insert(std::make_pair(id, generator));
-
-		return 0;
+		try {
+			Generator_t *generator = new SceneGenerator<ID_t, DerivedScene>();
+		
+			if(map_m.find(id) == map_m.end()) {
+				map_m.insert(std::make_pair(id, generator));
+			}
+		}
+		catch(std::bad_alloc &e) {
+			throw SceneRuntimeException("scene generator new bad_alloc");
+		}
 	}
 
 	void clearMap()
@@ -90,7 +96,7 @@ public:
 
 	Generator_t *getGenerator(ID_t &id) const
 	{
-		if(map_m.find(id) == map_m.end()) { return nullptr; }
+		if(map_m.find(id) == map_m.end()) { throw SceneLogicException("generator not found"); }
 
 		return map_m.at(id);
 	}
