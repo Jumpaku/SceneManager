@@ -54,10 +54,10 @@ class SceneIDGeneratorMap final
 {
 private:
 	typedef SceneID ID_t;
-	typedef BaseSceneGenerator<SceneID> Generator_t;
+	typedef std::shared_ptr<BaseSceneGenerator<SceneID>> Generator_t;
 
-	typedef std::map<SceneID, BaseSceneGenerator<SceneID> *> Map_t;
-	typedef std::pair<SceneID, BaseSceneGenerator<SceneID> *> Pair_t;
+	typedef std::map<SceneID, std::shared_ptr<BaseSceneGenerator<SceneID>>> Map_t;
+	typedef std::pair<SceneID, std::shared_ptr<BaseSceneGenerator<SceneID>>> Pair_t;
 private:
 	Map_t map_m;
 private:
@@ -73,28 +73,23 @@ public:
 	void insertGenerator(ID_t id)
 	{
 		try {
-			Generator_t *generator = new SceneGenerator<ID_t, DerivedScene>();
+			Generator_t generator = std::make_shared<SceneGenerator<ID_t, DerivedScene>>();
 		
 			if(map_m.find(id) == map_m.end()) {
 				map_m.insert(std::make_pair(id, generator));
 			}
 		}
 		catch(std::bad_alloc &e) {
-			throw SceneRuntimeException("scene generator new bad_alloc");
+			throw SceneRuntimeException("scene generator make_shared bad_alloc");
 		}
 	}
 
 	void clearMap()
 	{
-		std::for_each(map_m.begin(), map_m.end(), [](Pair_t pair)
-		{
-			delete pair.second;
-			pair.second = nullptr;
-		});
 		map_m.clear();
 	}
 
-	Generator_t *getGenerator(ID_t &id) const
+	Generator_t getGenerator(ID_t &id) const
 	{
 		if(map_m.find(id) == map_m.end()) { throw SceneLogicException("generator not found"); }
 

@@ -23,7 +23,7 @@ private:
 	typedef SceneID ID_t;
 	typedef SceneIDGeneratorMap<SceneID> IDGenMap_t;
 	typedef std::shared_ptr<BaseScene<SceneID>> SharedScene_t;
-	typedef BaseSceneGenerator<SceneID> Generator_t;
+	typedef std::shared_ptr<BaseSceneGenerator<SceneID>> Generator_t;
 private:
 	IDGenMap_t idGeneratorMap_m;
 private:
@@ -41,7 +41,7 @@ public:
 	SharedScene_t getScene(ID_t id) const
 	{
 		try {
-			Generator_t *generator = idGeneratorMap_m.getGenerator(id);
+			Generator_t generator = idGeneratorMap_m.getGenerator(id);
 
 			SharedScene_t newScene = generator->generateScene();
 
