@@ -65,7 +65,7 @@ public:
 	/**constructor*/
 	SceneManager() :tree_m(), currentScene_m(tree_m.end()) {}
 	/**destructor*/
-	~SceneManager() = default;
+	~SceneManager() { finalize(); }
 private:
 	int transition()
 	{
@@ -100,7 +100,7 @@ public:
 	int executeScene()
 	{
 		if(currentScene_m == tree_m.end()) { throw SceneLogicException("!execution error : current scene iterator is end of tree!"); }
-		if(currentScene_m->scene_m->doOneFrame() != 0) { throw SceneLogicException("!execution error : doOneFrame falure!"); }
+		currentScene_m->scene_m->doOneFrame();
 		try{
 			return transition();
 		}

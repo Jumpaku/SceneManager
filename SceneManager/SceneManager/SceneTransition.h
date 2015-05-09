@@ -96,6 +96,7 @@ public:
 			auto scene = factory.getScene(nextID_m);
 
 			tree.clear();
+
 			scene->initialize();
 
 			return tree.setRoot({ nextID_m, scene });
@@ -121,14 +122,14 @@ public:
 		try {
 			auto scene = factory.getScene(nextID_m);
 			current = tree.insertChild(current, { nextID_m, scene });
+		
+			if(current == tree.end()) { throw SceneLogicException("connot push"); }
+
+			current->scene_m->initialize();
 		}
 		catch(SceneLogicException &e) {
 			throw SceneLogicException("connot push");
 		}
-		if(current == tree.end()) { throw SceneLogicException("connot push"); }
-
-		current->scene_m->initialize();
-		
 		return current;
 		
 	}

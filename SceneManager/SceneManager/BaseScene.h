@@ -1,6 +1,7 @@
 #pragma once
 
 #include "SceneTransitionFactory.h"
+#include"SceneException.h"
 
 namespace jumpaku {
 namespace scenemanager {
@@ -57,15 +58,15 @@ public:
 	/**
 	*ゲームのメインループの本体であり,1ループに1度呼ばれる. 成功:0 / 失敗:-1
 	*/
-	virtual int doOneFrame() = 0;
+	virtual void doOneFrame() = 0;
 	/**
 	*SceneTreeから削除される時に呼ばれ,終了処理を行う. 成功:0 / 失敗:-1
 	*/
-	virtual int finalize() = 0;
+	virtual void finalize() = 0;
 	/**
 	*SceneTreeに追加された時に呼ばれ, 初期化処理を行う.成功:0 / 失敗:-1
 	*/
-	virtual int initialize() = 0;
+	virtual void initialize() = 0;
 };
 
 }

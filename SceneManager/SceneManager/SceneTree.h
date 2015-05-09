@@ -78,16 +78,14 @@ private:
 		auto begin = pos, end = pos;
 		auto finalize = [](Node_t &node)
 		{
-			if(node.scene_m != nullptr) {
-				node.scene_m->finalize();
-				node.scene_m = nullptr;
-			}
+			node.scene_m->finalize();
+			node.scene_m = nullptr;
 		};
 
 		if(end.isTail()) { return; }
 		while(end.hasParent() && end.isLast()) { end.goParent(); }
 		end.goNextSibling();
-
+		
 		std::for_each(begin, end, finalize);
 	}
 public:

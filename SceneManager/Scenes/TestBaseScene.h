@@ -20,9 +20,9 @@ public:
 	TestBaseScene() = default;
 	virtual ~TestBaseScene() = default;
 public:
-	int finalize()override;
-	int initialize()override;
-	int doOneFrame()override;
+	void finalize()override;
+	void initialize()override;
+	void doOneFrame()override;
 	SceneTransition decideNext()override;
 };
 
