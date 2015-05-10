@@ -7,18 +7,21 @@
 #include"SceneException.h"
 
 /**
-*シーンの実行とシーンの移行,シーン生成クラスの管理をする.
+*シーンの実行とシーンの遷移,生成を管理する.
 *テンプレート引数SceneIDはシーン識別名変数を表す.(列挙体,文字列,通し番号など)
 *
-*まずregisterScene<Scene>(id)を呼んで使用するシーンクラス(Scene)とそのシーンの識別名(id)を登録する.
-*そしてsetFirstScene(id)を呼んで最初のシーンを設定する.
-*メインループの中で1ループに1度excuteScene()を実行する.
-*終わったらfinalize()を呼ぶ.
+*まずregisterScene<Scene>(id)を呼んで使用するシーンクラス(Scene)とそのシーンの識別名(id)を登録する
+*そしてsetFirstScene(id)を呼んで最初のシーンを設定する
+*メインループの中で1ループに1度excuteScene()を実行する
+*excuteScene()の返り値がFINISH=0だったらループを抜ける
+*registerScene()とsetFirstScene()とexecuteScene()がSceneLogicException例外を投げないようにSceneクラスを派生させる
+*SceneRuntimeException例外が投げられたらゲームを終了させる
 *
 *使用例
 int main()
 {
-	SceneManager<scenetest::TestSceneID, scenetest::GameData> manager(gd);
+	GameData gd;
+	SceneManager<scenetest::TestSceneID, scenetest::GameData> manager(&gd);
 	try {
 		manager.registerScene<scenetest::SceneA>(scenetest::TestSceneID::SCENE_A);
 		manager.registerScene<scenetest::SceneC>(scenetest::TestSceneID::SCENE_C);
@@ -27,19 +30,13 @@ int main()
 
 		while(true) {
 			if(manager.executeScene() == SceneManager<scenetest::TestSceneID, scenetest::GameData>::FINISH) {
-				manager.finalize();
 				break;
 			}
 		}
 	}
-	catch(SceneLogicException &e) {
+	catch(SceneRuntimeException &e) {
 		std::cout << e.what() << "\n";
-		manager.finalize();
-	}
-	catch(SceneRuntimeException &e){
-		std::cout << e.what() << "\n";
-		manager.finalize();
-		return;
+		return -1;
 	}
 }
 */
@@ -57,9 +54,9 @@ private:
 	typedef SceneFactory<SceneID, SharedData> Factory_t;
 	typedef std::unique_ptr<BaseSceneTransition<SceneID, SharedData>> Transition_t;
 public:
-	/***/
+	/**executeScene()がCONTINUEを返したらループを続ける*/
 	static int const CONTINUE = 1;
-	/***/
+	/**executeScene()がFINISHを返したらループを抜ける*/
 	static int const FINISH = 0;
 private:
 	Tree_t tree_m;
@@ -96,7 +93,10 @@ private:
 	}
 public:
 	/**
-	*
+	*idに対してDerivedSceneを登録する
+	*すでに同じidが登録されていたら何もしない
+	*@param DerivedScene
+	*@param id
 	*/
 	template<class DerivedScene>
 	void registerScene(ID_t id)
@@ -104,7 +104,9 @@ public:
 		factory_m.insertGenerator<DerivedScene>(id);
 	}
 	/**
-	*
+	*現在のシーンを1フレーム分実行し,次のシーンへ遷移させる
+	*@return CONTINUE : 次のシーンがある時,FINISH : ない時
+	*@exception SceneLogicException : シーン遷移に失敗した時,SceneRuntimeException : シーンの生成に失敗した時
 	*/
 	int executeScene()
 	{
@@ -119,7 +121,7 @@ public:
 	}
 
 	/**
-	*
+	*終了処理を行う,デストラクタ内で呼ばれる
 	*/
 	void finalize()
 	{
@@ -129,7 +131,9 @@ public:
 	}
 
 	/**
-	*
+	*最初のシーンを設定する
+	*@param id
+	*@exception SceneLogicException : idがまだ登録されていない時,SceneRuntimeException : 最初のシーンの生成に失敗した時
 	*/
 	void setFirstScene(ID_t id)
 	{
@@ -137,7 +141,7 @@ public:
 			currentScene_m = ResetScene<ID_t, SharedData>(id).transitionScene(factory_m, tree_m, currentScene_m);
 		}
 		catch(SceneLogicException &e) {
-			throw SceneLogicException((std::string("!setting scene error : ") + e.what() + "!").c_str());
+			throw SceneLogicException((std::string("!scene setting error : ") + e.what() + "!").c_str());
 		}
 	}
 };

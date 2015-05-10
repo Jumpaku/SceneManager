@@ -10,11 +10,10 @@ using namespace scenetest;
 
 int main()
 {
-	auto gd = new GameData();
 	while(true) {
-		SceneManager<scenetest::TestSceneID, scenetest::GameData> manager(gd);
+		GameData gd;
+		SceneManager<scenetest::TestSceneID, scenetest::GameData> manager(&gd);
 		try {
-
 			manager.registerScene<scenetest::SceneA>(scenetest::TestSceneID::SCENE_A);
 			manager.registerScene<scenetest::SceneC>(scenetest::TestSceneID::SCENE_C);
 			manager.registerScene<scenetest::SceneB>(scenetest::TestSceneID::SCENE_B);
@@ -22,16 +21,17 @@ int main()
 
 			while(true) {
 				if(manager.executeScene() == SceneManager<scenetest::TestSceneID, scenetest::GameData>::FINISH) {
-					manager.finalize();
 					break;
 				}
 			}
 		}
 		catch(SceneLogicException &e) {
 			std::cout << e.what() << "\n";
-			manager.finalize();
+		}
+		catch(SceneRuntimeException &e) {
+			std::cout << e.what() << "\n";
+			return -1;
 		}
 		std::cout << "---------------------------------\n";
-
 	}
 }
