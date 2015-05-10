@@ -7,7 +7,11 @@
 
 namespace scenetest {
 
-struct GameData {};
+struct GameData
+{
+	int transition_m;
+	TestSceneID id_m;
+};
 
 typedef jumpaku::scenemanager::BaseScene<scenetest::TestSceneID, GameData> Scene;
 
@@ -15,9 +19,6 @@ class TestBaseScene : public Scene
 {
 protected:
 	std::string name_m = "TestBaseScene";
-private:
-	int method_m;
-	ID id_m;
 public:
 	TestBaseScene() = default;
 	virtual ~TestBaseScene() = default;

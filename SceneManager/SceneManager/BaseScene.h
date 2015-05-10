@@ -28,19 +28,32 @@ namespace scenemanager {
 template<typename SceneID, typename SharedData>
 class BaseScene
 {
+	friend SceneFactory < SceneID, SharedData > ;
 public:
 	/**シーン識別名の型*/
 	typedef SceneID ID;
 	/**シーンの遷移方法クラスの基本クラス*/
 	typedef std::unique_ptr<BaseSceneTransition<SceneID, SharedData>> SceneTransition;
-protected:
-	SharedData *sharedDate;
+private:
+	SharedData *sharedData_m;
 public:
 	/**default constructor*/
 	BaseScene() = default;
 	/**default denstructor*/
 	virtual ~BaseScene() = default;
+private:
+	void setSharedData(SharedData *data)
+	{
+		sharedData_m = data;
+	}
 protected:
+	/**
+	*
+	*/
+	SharedData *sharedData()
+	{
+		return sharedData_m;
+	}
 	/**
 	*
 	*/
@@ -58,10 +71,6 @@ protected:
 		return SceneTransitionFactory<SceneID, SharedData>::get<Transition>();
 	}
 public:
-	void setSharedData(SharedData *data)
-	{
-		sharedDate = data;
-	}
 	/**
 	*1ループに1度execute()の後に呼ばれ,次のシーンへの遷移方法クラスを返す.
 	*@return シーン遷移方法
