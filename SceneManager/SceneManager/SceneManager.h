@@ -63,7 +63,7 @@ private:
 	SceneManager &operator=(SceneManager &&) = delete;
 public:
 	/**constructor*/
-	SceneManager() :tree_m(), currentScene_m(tree_m.end()) {}
+	SceneManager(SharedData *data) :tree_m(), currentScene_m(tree_m.end()), factory_m(data) {}
 	/**destructor*/
 	~SceneManager() { finalize(); }
 private:

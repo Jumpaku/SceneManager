@@ -10,8 +10,9 @@ using namespace scenetest;
 
 int main()
 {
+	auto gd = new GameData();
 	while(true) {
-		SceneManager<scenetest::TestSceneID, scenetest::GameData> manager;
+		SceneManager<scenetest::TestSceneID, scenetest::GameData> manager(gd);
 		try {
 
 			manager.registerScene<scenetest::SceneA>(scenetest::TestSceneID::SCENE_A);

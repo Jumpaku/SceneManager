@@ -26,6 +26,7 @@ private:
 	typedef std::shared_ptr<BaseSceneGenerator<SceneID, SharedData>> Generator_t;
 private:
 	IDGenMap_t idGeneratorMap_m;
+	SharedData *sharedData_m;
 private:
 	SceneFactory(const SceneFactory &) = delete;
 	SceneFactory(SceneFactory &&) = delete;
@@ -33,7 +34,7 @@ private:
 	SceneFactory &operator=(SceneFactory &&) = delete;
 public:
 	/***/
-	SceneFactory() = default;
+	SceneFactory(SharedData *data) :sharedData_m(data) {}
 public:
 	/**
 	*
@@ -44,6 +45,8 @@ public:
 			Generator_t generator = idGeneratorMap_m.getGenerator(id);
 
 			SharedScene_t newScene = generator->generateScene();
+
+			newScene->setSharedData(sharedData_m);
 
 			return newScene;
 		}
