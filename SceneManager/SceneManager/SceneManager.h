@@ -14,24 +14,33 @@
 *そしてsetFirstScene(id)を呼んで最初のシーンを設定する.
 *メインループの中で1ループに1度excuteScene()を実行する.
 *終わったらfinalize()を呼ぶ.
-*/
-/*使用例
+*
+*使用例
 int main()
 {
-	SceneManager manager;
-	
-	manager.registerScene<scenetest::SceneA>(scenetest::TestSceneID::SCENE_A);
-	manager.registerScene<scenetest::SceneC>(scenetest::TestSceneID::SCENE_C);
-	manager.registerScene<scenetest::SceneB>(scenetest::TestSceneID::SCENE_B);
-	manager.setFirstScene(scenetest::TestSceneID::SCENE_A);
+	SceneManager<scenetest::TestSceneID, scenetest::GameData> manager(gd);
+	try {
+		manager.registerScene<scenetest::SceneA>(scenetest::TestSceneID::SCENE_A);
+		manager.registerScene<scenetest::SceneC>(scenetest::TestSceneID::SCENE_C);
+		manager.registerScene<scenetest::SceneB>(scenetest::TestSceneID::SCENE_B);
+		manager.setFirstScene(scenetest::TestSceneID::SCENE_A);
 
-	while (true){
-		if (manager.executeScene() != 0){
-			break;
+		while(true) {
+			if(manager.executeScene() == SceneManager<scenetest::TestSceneID, scenetest::GameData>::FINISH) {
+				manager.finalize();
+				break;
+			}
 		}
 	}
-
-	manager.finalize();
+	catch(SceneLogicException &e) {
+		std::cout << e.what() << "\n";
+		manager.finalize();
+	}
+	catch(SceneRuntimeException &e){
+		std::cout << e.what() << "\n";
+		manager.finalize();
+		return;
+	}
 }
 */
 

@@ -20,9 +20,6 @@ class SceneFactory;
 namespace jumpaku {
 namespace scenemanager {
 
-/**
-*
-*/
 template<typename SceneID, typename SharedData>
 class KeepScene : public BaseSceneTransition<SceneID, SharedData>
 {
@@ -37,9 +34,6 @@ public:
 	}
 };
 
-/**
-*
-*/
 template<typename SceneID, typename SharedData>
 class ClearScene : public BaseSceneTransition<SceneID, SharedData>
 {
@@ -55,9 +49,6 @@ public:
 	}
 };
 
-/**
-*
-*/
 template<typename SceneID, typename SharedData>
 class PopScene : public BaseSceneTransition<SceneID, SharedData>
 {
@@ -80,9 +71,6 @@ public:
 	}
 };
 
-/**
-*
-*/
 template<typename SceneID, typename SharedData>
 class ResetScene : public BaseSceneTransition<SceneID, SharedData>
 {
@@ -107,9 +95,6 @@ public:
 	}
 };
 
-/**
-*
-*/
 template<typename SceneID, typename SharedData>
 class PushScene : public BaseSceneTransition<SceneID, SharedData>
 {
@@ -135,9 +120,6 @@ public:
 	}
 };
 
-/**
-*
-*/
 template<typename SceneID, typename SharedData>
 class JumpScene : public BaseSceneTransition<SceneID, SharedData>
 {
@@ -164,9 +146,6 @@ public:
 	}
 };
 
-/**
-*
-*/
 template<typename SceneID, typename SharedData>
 class ParentScene : public BaseSceneTransition<SceneID, SharedData>
 {
@@ -184,9 +163,6 @@ public:
 	}
 };
 
-/**
-*
-*/
 template<typename SceneID, typename SharedData>
 class ChildScene : public BaseSceneTransition<SceneID, SharedData>
 {

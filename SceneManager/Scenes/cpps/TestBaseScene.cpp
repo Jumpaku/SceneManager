@@ -1,6 +1,6 @@
 #include "./../TestBaseScene.h"
 
-using scenetest::TestBaseScene;
+using namespace scenetest;
 using namespace jumpaku::scenemanager;
 
 void TestBaseScene::finalize()
@@ -39,7 +39,7 @@ TestBaseScene::SceneTransition scenetest::TestBaseScene::decideNext()
 		transition = getSceneTransition<ClearScene>();
 		break;
 	case 2:
-		transition = getSceneTransition<PopScene>(sharedData()->id_m);
+		transition = getSceneTransition<PopScene>();
 		break;
 	case 3:
 		transition = getSceneTransition<ResetScene>(sharedData()->id_m);
