@@ -5,13 +5,13 @@
 namespace jumpaku {
 namespace scenemanager {
 
-template<typename SceneID>
+template<typename SceneID, typename SharedData>
 class BaseScene;
-template<typename SceneID>
+template<typename SceneID, typename SharedData>
 class SceneTree;
-template<typename SceneID>
+template<typename SceneID, typename SharedData>
 class SceneNode;
-template<typename SceneID>
+template<typename SceneID, typename SharedData>
 class SceneFactory;
 
 }
@@ -23,8 +23,8 @@ namespace scenemanager {
 /**
 *
 */
-template<typename SceneID>
-class KeepScene : public BaseSceneTransition<SceneID>
+template<typename SceneID, typename SharedData>
+class KeepScene : public BaseSceneTransition<SceneID, SharedData>
 {
 public:
 	KeepScene() = default;
@@ -40,8 +40,8 @@ public:
 /**
 *
 */
-template<typename SceneID>
-class ClearScene : public BaseSceneTransition<SceneID>
+template<typename SceneID, typename SharedData>
+class ClearScene : public BaseSceneTransition<SceneID, SharedData>
 {
 public:
 	ClearScene() = default;
@@ -58,8 +58,8 @@ public:
 /**
 *
 */
-template<typename SceneID>
-class PopScene : public BaseSceneTransition<SceneID>
+template<typename SceneID, typename SharedData>
+class PopScene : public BaseSceneTransition<SceneID, SharedData>
 {
 public:
 	PopScene() = default;
@@ -83,8 +83,8 @@ public:
 /**
 *
 */
-template<typename SceneID>
-class ResetScene : public BaseSceneTransition<SceneID>
+template<typename SceneID, typename SharedData>
+class ResetScene : public BaseSceneTransition<SceneID, SharedData>
 {
 public:
 	ResetScene(ID_t const &id) :Base_t(id) {}
@@ -110,8 +110,8 @@ public:
 /**
 *
 */
-template<typename SceneID>
-class PushScene : public BaseSceneTransition<SceneID>
+template<typename SceneID, typename SharedData>
+class PushScene : public BaseSceneTransition<SceneID, SharedData>
 {
 public:
 	PushScene(ID_t const &id) :Base_t(id) {}
@@ -138,8 +138,8 @@ public:
 /**
 *
 */
-template<typename SceneID>
-class JumpScene : public BaseSceneTransition<SceneID>
+template<typename SceneID, typename SharedData>
+class JumpScene : public BaseSceneTransition<SceneID, SharedData>
 {
 public:
 	JumpScene(ID_t const &id) :Base_t(id) {}
@@ -154,7 +154,7 @@ public:
 		}
 		else{
 			try {
-				return PushScene<ID_t>(nextID_m).transitionScene(
+				return PushScene<SceneID, SharedData>(nextID_m).transitionScene(
 					factory, tree, current);
 			}
 			catch(SceneLogicException &e) {
@@ -167,8 +167,8 @@ public:
 /**
 *
 */
-template<typename SceneID>
-class ParentScene : public BaseSceneTransition<SceneID>
+template<typename SceneID, typename SharedData>
+class ParentScene : public BaseSceneTransition<SceneID, SharedData>
 {
 public:
 	ParentScene() = default;
@@ -187,8 +187,8 @@ public:
 /**
 *
 */
-template<typename SceneID>
-class ChildScene : public BaseSceneTransition<SceneID>
+template<typename SceneID, typename SharedData>
+class ChildScene : public BaseSceneTransition<SceneID, SharedData>
 {
 public:
 	ChildScene(ID_t const &id) :Base_t(id) {}

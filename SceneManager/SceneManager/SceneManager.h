@@ -38,15 +38,15 @@ int main()
 namespace jumpaku {
 namespace scenemanager {
 
-template<typename SceneID>
+template<typename SceneID,typename SharedData>
 class SceneManager final
 {
 private:
 	typedef SceneID ID_t;
-	typedef SceneTree<SceneID> Tree_t;
-	typedef typename Tree<SceneNode<SceneID>>::preorder_iterator Iterator_t;
-	typedef SceneFactory<SceneID> Factory_t;
-	typedef std::unique_ptr<BaseSceneTransition<SceneID>> Transition_t;
+	typedef SceneTree<SceneID, SharedData> Tree_t;
+	typedef typename Tree<SceneNode<SceneID, SharedData>>::preorder_iterator Iterator_t;
+	typedef SceneFactory<SceneID, SharedData> Factory_t;
+	typedef std::unique_ptr<BaseSceneTransition<SceneID, SharedData>> Transition_t;
 public:
 	/***/
 	static int const CONTINUE = 1;
@@ -125,7 +125,7 @@ public:
 	void setFirstScene(ID_t id)
 	{
 		try {
-			currentScene_m = ResetScene<ID_t>(id).transitionScene(factory_m, tree_m, currentScene_m);
+			currentScene_m = ResetScene<ID_t, SharedData>(id).transitionScene(factory_m, tree_m, currentScene_m);
 		}
 		catch(SceneLogicException &e) {
 			throw SceneLogicException((std::string("!setting scene error : ") + e.what() + "!").c_str());

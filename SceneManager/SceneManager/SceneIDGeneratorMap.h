@@ -9,7 +9,7 @@
 namespace jumpaku {
 namespace scenemanager {
 
-template<typename SceneID>
+template<typename SceneID, typename SharedData>
 class BaseScene;
 
 }
@@ -18,24 +18,24 @@ class BaseScene;
 namespace jumpaku {
 namespace scenemanager {
 
-template<typename SceneID>
+template<typename SceneID, typename SharedData>
 class BaseSceneGenerator
 {
 private:
 	typedef SceneID ID_t;
-	typedef std::shared_ptr<BaseScene<SceneID>> SharedScene_t;
+	typedef std::shared_ptr<BaseScene<SceneID, SharedData>> SharedScene_t;
 public:
 	virtual ~BaseSceneGenerator() = default;
 	virtual SharedScene_t generateScene() const = 0;
 };
 
 
-template<typename SceneID, class DerivedScene>
-class SceneGenerator : public BaseSceneGenerator<SceneID>
+template<typename SceneID, typename SharedData, class DerivedScene>
+class SceneGenerator : public BaseSceneGenerator<SceneID, SharedData>
 {
 private:
 	typedef SceneID ID_t;
-	typedef std::shared_ptr<BaseScene<SceneID>> SharedScene_t;
+	typedef std::shared_ptr<BaseScene<SceneID, SharedData>> SharedScene_t;
 public:
 	SharedScene_t generateScene() const
 	{
@@ -49,15 +49,15 @@ public:
 };
 
 
-template<typename SceneID>
+template<typename SceneID, typename SharedData>
 class SceneIDGeneratorMap final
 {
 private:
 	typedef SceneID ID_t;
-	typedef std::shared_ptr<BaseSceneGenerator<SceneID>> Generator_t;
+	typedef std::shared_ptr<BaseSceneGenerator<SceneID, SharedData>> Generator_t;
 
-	typedef std::map<SceneID, std::shared_ptr<BaseSceneGenerator<SceneID>>> Map_t;
-	typedef std::pair<SceneID, std::shared_ptr<BaseSceneGenerator<SceneID>>> Pair_t;
+	typedef std::map<SceneID, std::shared_ptr<BaseSceneGenerator<SceneID, SharedData>>> Map_t;
+	typedef std::pair<SceneID, std::shared_ptr<BaseSceneGenerator<SceneID, SharedData>>> Pair_t;
 private:
 	Map_t map_m;
 private:
@@ -73,7 +73,7 @@ public:
 	void insertGenerator(ID_t id)
 	{
 		try {
-			Generator_t generator = std::make_shared<SceneGenerator<ID_t, DerivedScene>>();
+			Generator_t generator = std::make_shared<SceneGenerator<ID_t, SharedData, DerivedScene>>();
 		
 			if(map_m.find(id) == map_m.end()) {
 				map_m.insert(std::make_pair(id, generator));

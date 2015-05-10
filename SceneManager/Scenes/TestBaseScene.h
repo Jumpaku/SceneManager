@@ -7,7 +7,9 @@
 
 namespace scenetest {
 
-typedef jumpaku::scenemanager::BaseScene<scenetest::TestSceneID> Scene;
+struct GameData {};
+
+typedef jumpaku::scenemanager::BaseScene<scenetest::TestSceneID, GameData> Scene;
 
 class TestBaseScene : public Scene
 {

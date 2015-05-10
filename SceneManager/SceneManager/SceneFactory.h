@@ -4,7 +4,7 @@
 namespace jumpaku {
 namespace scenemanager {
 
-template<typename SceneID>
+template<typename SceneID,typename SharedData>
 class BaseScene;
 
 }
@@ -16,14 +16,14 @@ class BaseScene;
 namespace jumpaku {
 namespace scenemanager {
 
-template<typename SceneID>
+template<typename SceneID, typename SharedData>
 class SceneFactory final
 {
 private:
 	typedef SceneID ID_t;
-	typedef SceneIDGeneratorMap<SceneID> IDGenMap_t;
-	typedef std::shared_ptr<BaseScene<SceneID>> SharedScene_t;
-	typedef std::shared_ptr<BaseSceneGenerator<SceneID>> Generator_t;
+	typedef SceneIDGeneratorMap<SceneID, SharedData> IDGenMap_t;
+	typedef std::shared_ptr<BaseScene<SceneID, SharedData>> SharedScene_t;
+	typedef std::shared_ptr<BaseSceneGenerator<SceneID, SharedData>> Generator_t;
 private:
 	IDGenMap_t idGeneratorMap_m;
 private:

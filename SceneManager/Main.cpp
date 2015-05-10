@@ -11,7 +11,7 @@ using namespace scenetest;
 int main()
 {
 	while(true) {
-		SceneManager<scenetest::TestSceneID> manager;
+		SceneManager<scenetest::TestSceneID, scenetest::GameData> manager;
 		try {
 
 			manager.registerScene<scenetest::SceneA>(scenetest::TestSceneID::SCENE_A);
@@ -20,7 +20,7 @@ int main()
 			manager.setFirstScene(scenetest::TestSceneID::SCENE_A);
 
 			while(true) {
-				if(manager.executeScene() == SceneManager<scenetest::TestSceneID>::FINISH) {
+				if(manager.executeScene() == SceneManager<scenetest::TestSceneID, scenetest::GameData>::FINISH) {
 					manager.finalize();
 					break;
 				}

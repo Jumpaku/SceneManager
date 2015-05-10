@@ -6,9 +6,9 @@
 namespace jumpaku {
 namespace scenemanager {
 
-template<typename SceneID>
+template<typename SceneID, typename SharedData>
 class BaseSceneTransition;
-template<typename SceneID>
+template<typename SceneID, typename SharedData>
 class SceneTransitionFactory;
 
 }
@@ -25,29 +25,37 @@ class SceneTransitionFactory;
 namespace jumpaku {
 namespace scenemanager {
 
-	template<typename SceneID>
-	class BaseScene
+template<typename SceneID, typename SharedData>
+class BaseScene
 {
 public:
 	/**シーン識別名の型*/
 	typedef SceneID ID;
 	/**シーンの遷移方法クラスの基本クラス*/
-	typedef std::unique_ptr<BaseSceneTransition<SceneID>> SceneTransition;
+	typedef std::unique_ptr<BaseSceneTransition<SceneID, SharedData>> SceneTransition;
+protected:
+	SharedData *sharedDate;
 public:
 	/**default constructor*/
 	BaseScene() = default;
 	/**default denstructor*/
 	virtual ~BaseScene() = default;
 protected:
-	template<template <typename> class Method>
+	/**
+	*
+	*/
+	template<template <typename, typename> class Transition>
 	static SceneTransition getSceneTransition(SceneID id)
 	{
-		return SceneTransitionFactory<SceneID>::get<Method>(id);
+		return SceneTransitionFactory<SceneID, SharedData>::get<Transition>(id);
 	}
-	template<template <typename> class Method>
+	/**
+	*
+	*/
+	template<template <typename, typename> class Transition>
 	static SceneTransition getSceneTransition()
 	{
-		return SceneTransitionFactory<SceneID>::get<Method>();
+		return SceneTransitionFactory<SceneID, SharedData>::get<Transition>();
 	}
 public:
 	/**
