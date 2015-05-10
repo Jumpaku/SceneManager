@@ -37,7 +37,7 @@ private:
 	typedef SceneID ID_t;
 	typedef std::shared_ptr<BaseScene<SceneID, SharedData>> SharedScene_t;
 public:
-	SharedScene_t generateScene() const
+	SharedScene_t generateScene() const override
 	{
 		try {
 			return std::make_shared<DerivedScene>();

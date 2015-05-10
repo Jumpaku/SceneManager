@@ -58,6 +58,10 @@ protected:
 		return SceneTransitionFactory<SceneID, SharedData>::get<Transition>();
 	}
 public:
+	void setSharedData(SharedData *data)
+	{
+		sharedDate = data;
+	}
 	/**
 	*1ループに1度execute()の後に呼ばれ,次のシーンへの遷移方法クラスを返す.
 	*@return シーン遷移方法
