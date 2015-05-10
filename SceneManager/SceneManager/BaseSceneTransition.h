@@ -2,16 +2,18 @@
 
 #include "SceneFactory.h"
 #include "SceneTree.h"
+#include"SceneException.h"
+
 namespace jumpaku {
 namespace scenemanager {
 
-template<typename SceneID>
+template<typename SceneID, typename SharedData>
 class BaseScene;
-template<typename SceneID>
+template<typename SceneID, typename SharedData>
 class SceneTree;
-template<typename SceneID>
+template<typename SceneID, typename SharedData>
 class SceneNode;
-template<typename SceneID>
+template<typename SceneID, typename SharedData>
 class SceneFactory;
 
 }
@@ -23,24 +25,24 @@ namespace scenemanager {
 /**
 *
 */
-template<typename SceneID>
+template<typename SceneID, typename SharedData>
 class BaseSceneTransition
 {
 protected:
 	/***/
 	typedef SceneID ID_t;
 	/***/
-	typedef BaseSceneTransition<SceneID> Base_t;
+	typedef BaseSceneTransition<SceneID, SharedData> Base_t;
 	/***/
-	typedef typename Tree<SceneNode<SceneID>>::preorder_iterator Iterator_t;
+	typedef typename Tree<SceneNode<SceneID, SharedData>>::preorder_iterator Iterator_t;
 	/***/
-	typedef SceneFactory<SceneID> Factory_t;
+	typedef SceneFactory<SceneID, SharedData> Factory_t;
 	/***/
-	typedef SceneTree<SceneID> Tree_t;
+	typedef SceneTree<SceneID, SharedData> Tree_t;
 	/***/
-	typedef SceneNode<SceneID> Node_t;
+	typedef SceneNode<SceneID, SharedData> Node_t;
 	/***/
-	typedef std::shared_ptr<BaseScene<SceneID>> SharedScene_t;
+	typedef std::shared_ptr<BaseScene<SceneID, SharedData>> SharedScene_t;
 protected:
 	/***/
 	ID_t nextID_m;

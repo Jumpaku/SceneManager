@@ -1,13 +1,14 @@
 #pragma once
 
 #include "SceneTransitionFactory.h"
+#include"SceneException.h"
 
 namespace jumpaku {
 namespace scenemanager {
 
-template<typename SceneID>
+template<typename SceneID, typename SharedData>
 class BaseSceneTransition;
-template<typename SceneID>
+template<typename SceneID, typename SharedData>
 class SceneTransitionFactory;
 
 }
@@ -24,29 +25,37 @@ class SceneTransitionFactory;
 namespace jumpaku {
 namespace scenemanager {
 
-	template<typename SceneID>
-	class BaseScene
+template<typename SceneID, typename SharedData>
+class BaseScene
 {
 public:
 	/**シーン識別名の型*/
 	typedef SceneID ID;
 	/**シーンの遷移方法クラスの基本クラス*/
-	typedef std::unique_ptr<BaseSceneTransition<SceneID>> SceneTransition;
+	typedef std::unique_ptr<BaseSceneTransition<SceneID, SharedData>> SceneTransition;
+protected:
+	SharedData *sharedDate;
 public:
 	/**default constructor*/
 	BaseScene() = default;
 	/**default denstructor*/
 	virtual ~BaseScene() = default;
 protected:
-	template<template <typename> class Method>
+	/**
+	*
+	*/
+	template<template <typename, typename> class Transition>
 	static SceneTransition getSceneTransition(SceneID id)
 	{
-		return SceneTransitionFactory<SceneID>::get<Method>(id);
+		return SceneTransitionFactory<SceneID, SharedData>::get<Transition>(id);
 	}
-	template<template <typename> class Method>
+	/**
+	*
+	*/
+	template<template <typename, typename> class Transition>
 	static SceneTransition getSceneTransition()
 	{
-		return SceneTransitionFactory<SceneID>::get<Method>();
+		return SceneTransitionFactory<SceneID, SharedData>::get<Transition>();
 	}
 public:
 	/**
@@ -57,15 +66,15 @@ public:
 	/**
 	*ゲームのメインループの本体であり,1ループに1度呼ばれる. 成功:0 / 失敗:-1
 	*/
-	virtual int doOneFrame() = 0;
+	virtual void doOneFrame() = 0;
 	/**
 	*SceneTreeから削除される時に呼ばれ,終了処理を行う. 成功:0 / 失敗:-1
 	*/
-	virtual int finalize() = 0;
+	virtual void finalize() = 0;
 	/**
 	*SceneTreeに追加された時に呼ばれ, 初期化処理を行う.成功:0 / 失敗:-1
 	*/
-	virtual int initialize() = 0;
+	virtual void initialize() = 0;
 };
 
 }

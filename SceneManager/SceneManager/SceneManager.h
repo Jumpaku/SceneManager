@@ -4,6 +4,8 @@
 #include "SceneFactory.h"
 #include "SceneTransition.h"
 
+#include"SceneException.h"
+
 /**
 *シーンの実行とシーンの移行,シーン生成クラスの管理をする.
 *テンプレート引数SceneIDはシーン識別名変数を表す.(列挙体,文字列,通し番号など)
@@ -36,15 +38,20 @@ int main()
 namespace jumpaku {
 namespace scenemanager {
 
-template<typename SceneID>
+template<typename SceneID,typename SharedData>
 class SceneManager final
 {
 private:
 	typedef SceneID ID_t;
-	typedef SceneTree<SceneID> Tree_t;
-	typedef typename Tree<SceneNode<SceneID>>::preorder_iterator Iterator_t;
-	typedef SceneFactory<SceneID> Factory_t;
-	typedef std::unique_ptr<BaseSceneTransition<SceneID>> Transition_t;
+	typedef SceneTree<SceneID, SharedData> Tree_t;
+	typedef typename Tree<SceneNode<SceneID, SharedData>>::preorder_iterator Iterator_t;
+	typedef SceneFactory<SceneID, SharedData> Factory_t;
+	typedef std::unique_ptr<BaseSceneTransition<SceneID, SharedData>> Transition_t;
+public:
+	/***/
+	static int const CONTINUE = 1;
+	/***/
+	static int const FINISH = 0;
 private:
 	Tree_t tree_m;
 	Iterator_t currentScene_m;
@@ -55,46 +62,51 @@ private:
 	SceneManager &operator=(const SceneManager &) = delete;
 	SceneManager &operator=(SceneManager &&) = delete;
 public:
-	/***/
+	/**constructor*/
 	SceneManager() :tree_m(), currentScene_m(tree_m.end()) {}
-	/***/
-	~SceneManager() = default;
+	/**destructor*/
+	~SceneManager() { finalize(); }
 private:
 	int transition()
 	{
-		if(currentScene_m != tree_m.end()) {
-			if(currentScene_m->scene_m == nullptr) { return -1; }
-			Transition_t transition
-				= currentScene_m->scene_m->decideNext();
+		if(currentScene_m == tree_m.end()) {
+			throw SceneLogicException("!transition error : current scene itertor is end of tree!");
+		}
 
+		Transition_t transition = currentScene_m->scene_m->decideNext();
+
+		try {
 			currentScene_m = transition->transitionScene(
 				factory_m, tree_m, currentScene_m);
 		}
+		catch(SceneLogicException &e) {
+			throw SceneLogicException((std::string("!transition error : ") + e.what() + "!").c_str());
+		}
 
-		if(currentScene_m == tree_m.end()) { return -1; }
-
-		return 0;
+		return currentScene_m == tree_m.end() ? FINISH : CONTINUE;
 	}
 public:
 	/**
 	*
 	*/
 	template<class DerivedScene>
-	int registerScene(ID_t id)
+	void registerScene(ID_t id)
 	{
-		return factory_m.insertGenerator<DerivedScene>(id);
+		factory_m.insertGenerator<DerivedScene>(id);
 	}
 	/**
 	*
 	*/
 	int executeScene()
 	{
-		if(currentScene_m == tree_m.end()) { return -1; }
-		if(currentScene_m->scene_m == nullptr) { return -1; }
-		if(currentScene_m->scene_m->doOneFrame() != 0) { return -1; }
-		if(transition() != 0) { return -1; }
-
-		return 0;
+		if(currentScene_m == tree_m.end()) { throw SceneLogicException("!execution error : current scene iterator is end of tree!"); }
+		currentScene_m->scene_m->doOneFrame();
+		try{
+			return transition();
+		}
+		catch(SceneLogicException &e) {
+			throw;
+		}
 	}
 
 	/**
@@ -110,11 +122,14 @@ public:
 	/**
 	*
 	*/
-	int setFirstScene(ID_t id)
+	void setFirstScene(ID_t id)
 	{
-		currentScene_m = ResetScene<ID_t>(id).transitionScene(factory_m, tree_m, currentScene_m);
-
-		return 0;
+		try {
+			currentScene_m = ResetScene<ID_t, SharedData>(id).transitionScene(factory_m, tree_m, currentScene_m);
+		}
+		catch(SceneLogicException &e) {
+			throw SceneLogicException((std::string("!setting scene error : ") + e.what() + "!").c_str());
+		}
 	}
 };
 

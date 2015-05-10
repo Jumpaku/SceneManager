@@ -7,7 +7,9 @@
 
 namespace scenetest {
 
-typedef jumpaku::scenemanager::BaseScene<scenetest::TestSceneID> Scene;
+struct GameData {};
+
+typedef jumpaku::scenemanager::BaseScene<scenetest::TestSceneID, GameData> Scene;
 
 class TestBaseScene : public Scene
 {
@@ -20,9 +22,9 @@ public:
 	TestBaseScene() = default;
 	virtual ~TestBaseScene() = default;
 public:
-	int finalize()override;
-	int initialize()override;
-	int doOneFrame()override;
+	void finalize()override;
+	void initialize()override;
+	void doOneFrame()override;
 	SceneTransition decideNext()override;
 };
 

@@ -4,10 +4,11 @@
 #include <algorithm>
 #include "../Tree/Tree.h"
 #include "BaseScene.h"
+
 namespace jumpaku {
 namespace scenemanager {
 
-template<typename SceneID>
+template<typename SceneID, typename SharedData>
 class BaseScene;
 
 }
@@ -16,12 +17,12 @@ class BaseScene;
 namespace jumpaku {
 namespace scenemanager {
 
-template<typename SceneID>
+template<typename SceneID,typename SharedData>
 class SceneNode
 {
 private:
 	typedef SceneID ID_t;
-	typedef std::shared_ptr<BaseScene<SceneID>> SharedScene_t;
+	typedef std::shared_ptr<BaseScene<SceneID, SharedData>> SharedScene_t;
 public:
 	/***/
 	ID_t id_m;
@@ -50,15 +51,15 @@ public:
 };
 
 
-template<typename SceneID>
+template<typename SceneID,typename SharedData>
 class SceneTree final
 {
 private:
 	typedef SceneID ID_t;
-	typedef SceneNode<SceneID>  Node_t;
-	typedef std::shared_ptr<BaseScene<SceneID>> SharedScene_t;
-	typedef typename Tree<SceneNode<SceneID>>::preorder_iterator Iterator_t;
-	typedef Tree<SceneNode<SceneID>> Tree_t;
+	typedef SceneNode<SceneID, SharedData>  Node_t;
+	typedef std::shared_ptr<BaseScene<SceneID, SharedData>> SharedScene_t;
+	typedef typename Tree<SceneNode<SceneID, SharedData>>::preorder_iterator Iterator_t;
+	typedef Tree<SceneNode<SceneID, SharedData>> Tree_t;
 private:
 	Tree_t sceneTree_m;
 public:
@@ -77,16 +78,14 @@ private:
 		auto begin = pos, end = pos;
 		auto finalize = [](Node_t &node)
 		{
-			if(node.scene_m != nullptr) {
-				node.scene_m->finalize();
-				node.scene_m = nullptr;
-			}
+			node.scene_m->finalize();
+			node.scene_m = nullptr;
 		};
 
 		if(end.isTail()) { return; }
 		while(end.hasParent() && end.isLast()) { end.goParent(); }
 		end.goNextSibling();
-
+		
 		std::for_each(begin, end, finalize);
 	}
 public:

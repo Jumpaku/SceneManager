@@ -4,7 +4,7 @@
 namespace jumpaku {
 namespace scenemanager {
 
-template<typename SceneID>
+template<typename SceneID,typename SharedData>
 class BaseScene;
 
 }
@@ -16,14 +16,14 @@ class BaseScene;
 namespace jumpaku {
 namespace scenemanager {
 
-template<typename SceneID>
+template<typename SceneID, typename SharedData>
 class SceneFactory final
 {
 private:
 	typedef SceneID ID_t;
-	typedef SceneIDGeneratorMap<SceneID> IDGenMap_t;
-	typedef std::shared_ptr<BaseScene<SceneID>> SharedScene_t;
-	typedef BaseSceneGenerator<SceneID> Generator_t;
+	typedef SceneIDGeneratorMap<SceneID, SharedData> IDGenMap_t;
+	typedef std::shared_ptr<BaseScene<SceneID, SharedData>> SharedScene_t;
+	typedef std::shared_ptr<BaseSceneGenerator<SceneID, SharedData>> Generator_t;
 private:
 	IDGenMap_t idGeneratorMap_m;
 private:
@@ -40,15 +40,16 @@ public:
 	*/
 	SharedScene_t getScene(ID_t id) const
 	{
-		Generator_t *generator = nullptr;
-		SharedScene_t newScene = nullptr;
+		try {
+			Generator_t generator = idGeneratorMap_m.getGenerator(id);
 
-		generator = idGeneratorMap_m.getGenerator(id);
-		if(generator != nullptr) {
-			newScene = generator->generateScene();
+			SharedScene_t newScene = generator->generateScene();
+
+			return newScene;
 		}
-
-		return newScene;
+		catch(SceneLogicException &e) {
+			throw SceneLogicException("cannot generate scene");
+		}
 	}
 
 	/**
@@ -63,9 +64,9 @@ public:
 	*
 	*/
 	template<class DerivedScene>
-	int insertGenerator(ID_t id)
+	void insertGenerator(ID_t id)
 	{
-		return idGeneratorMap_m.insertGenerator<DerivedScene>(id);
+		idGeneratorMap_m.insertGenerator<DerivedScene>(id);
 	}
 };
 
