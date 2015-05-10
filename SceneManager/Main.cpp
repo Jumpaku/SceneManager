@@ -13,10 +13,10 @@ int main()
 	while(true) {
 		GameData gd;
 		SceneManager<scenetest::TestSceneID, scenetest::GameData> manager(&gd);
+		manager.registerScene<scenetest::SceneA>(scenetest::TestSceneID::SCENE_A);
+		manager.registerScene<scenetest::SceneC>(scenetest::TestSceneID::SCENE_C);
+		manager.registerScene<scenetest::SceneB>(scenetest::TestSceneID::SCENE_B);
 		try {
-			manager.registerScene<scenetest::SceneA>(scenetest::TestSceneID::SCENE_A);
-			manager.registerScene<scenetest::SceneC>(scenetest::TestSceneID::SCENE_C);
-			manager.registerScene<scenetest::SceneB>(scenetest::TestSceneID::SCENE_B);
 			manager.setFirstScene(scenetest::TestSceneID::SCENE_A);
 
 			while(true) {
