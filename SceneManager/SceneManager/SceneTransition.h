@@ -89,7 +89,7 @@ public:
 
 			return tree.setRoot({ nextID_m, scene });
 		}
-		catch(SceneLogicException &e) {
+		catch(SceneLogicException &) {
 			throw SceneLogicException("cannot reset");
 		}
 	}
@@ -112,7 +112,7 @@ public:
 
 			current->scene_m->initialize();
 		}
-		catch(SceneLogicException &e) {
+		catch(SceneLogicException &) {
 			throw SceneLogicException("connot push");
 		}
 		return current;
@@ -139,7 +139,7 @@ public:
 				return PushScene<SceneID, SharedData>(nextID_m).transitionScene(
 					factory, tree, current);
 			}
-			catch(SceneLogicException &e) {
+			catch(SceneLogicException &) {
 				throw SceneLogicException("cannot jump");
 			}
 		}

@@ -50,7 +50,7 @@ public:
 
 			return newScene;
 		}
-		catch(SceneLogicException &e) {
+		catch(SceneLogicException &) {
 			throw SceneLogicException("cannot generate scene");
 		}
 	}
