@@ -42,7 +42,7 @@ public:
 		try {
 			return std::make_shared<DerivedScene>();
 		}
-		catch(std::bad_alloc &e) {
+		catch(std::bad_alloc &) {
 			throw SceneRuntimeException("scene make_shared bad_alloc");
 		}
 	}
@@ -79,7 +79,7 @@ public:
 				map_m.insert(std::make_pair(id, generator));
 			}
 		}
-		catch(std::bad_alloc &e) {
+		catch(std::bad_alloc &) {
 			throw SceneRuntimeException("scene generator make_shared bad_alloc");
 		}
 	}

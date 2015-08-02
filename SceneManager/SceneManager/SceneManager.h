@@ -115,7 +115,7 @@ public:
 		try{
 			return transition();
 		}
-		catch(SceneLogicException &e) {
+		catch(SceneLogicException &) {
 			throw;
 		}
 	}
